@@ -2,29 +2,23 @@
 var tokenlist = (function() {
 
     var service = {
-        exsits: function(target, str) {
-            var i, len;
-            for (i = 0, len = target.length; i < len; i++) {
-                if (target[i] === str) {
-                    return true;
-                }
-            }
-            return false;
+        clean: function(str) {
+            return str.replace(/^\s+|\s+$/g, '');
         }
     };
 
     var factory = function(target, str, type) {
 
-        // trim the target string
-        target = target.replace(/^\s+|\s+$/g, '');
+        // trim the input string
+        target = service.clean(target);
+        str = service.clean(str);
 
-        targetArr = target.split(/\s+/);
+        var targetArr = target.split(/\s+/);
 
         var map = {
             add: function(target, str) {
                 target.push(str);
-                // TODO: refactor
-                return target.join(' ').replace(/^\s+|\s+$/g, '');
+                return service.clean(target.join(' '));
             },
             remove: function(target, str) {
 
@@ -34,8 +28,7 @@ var tokenlist = (function() {
                         rst.push(target[i]);
                     }
                 }
-                // TODO: refactor
-                return rst.join(' ').replace(/^\s+|\s+$/g, '');
+                return service.clean(rst.join(' '));
             },
             exsits: function(target, str) {
                 var i, len;
@@ -50,6 +43,7 @@ var tokenlist = (function() {
 
         return map[type](targetArr, str);
     };
+
     return {
         add: function(target, str) {
             return factory(target, str, 'add');
@@ -65,8 +59,9 @@ var tokenlist = (function() {
         contains: function(target, str) {
             return factory(target, str, 'exsits');
         },
-
-        item: function(target, index) {}
+        item: function(target, index) {
+            throw new Error('not implemented yet');
+        }
     };
 
 }());
