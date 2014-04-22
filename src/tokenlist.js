@@ -3,7 +3,10 @@ var tokenlist = (function() {
 
     var service = {
         clean: function(str) {
-            if (str === null) return '';
+
+            if (str == null) {
+                return '';
+            }
             return str.replace(/^\s+|\s+$/g, '');
         },
         join: function(arr) {
