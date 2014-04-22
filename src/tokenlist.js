@@ -3,6 +3,7 @@ var tokenlist = (function() {
 
     var service = {
         clean: function(str) {
+            if (str === null) return '';
             return str.replace(/^\s+|\s+$/g, '');
         }
     };
@@ -38,6 +39,12 @@ var tokenlist = (function() {
                     }
                 }
                 return false;
+            },
+            item: function(t) {
+
+                return function(index) {
+                    return t[index];
+                };
             }
         };
 
@@ -60,7 +67,7 @@ var tokenlist = (function() {
             return factory(target, str, 'exsits');
         },
         item: function(target, index) {
-            throw new Error('not implemented yet');
+            return factory(target, null, 'item')(index);
         }
     };
 
