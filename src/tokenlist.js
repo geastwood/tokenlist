@@ -5,6 +5,12 @@ var tokenlist = (function() {
         clean: function(str) {
             if (str === null) return '';
             return str.replace(/^\s+|\s+$/g, '');
+        },
+        join: function(arr) {
+            return arr.join(' ');
+        },
+        buildListStr: function(arr) {
+            return this.clean(this.join(arr));
         }
     };
 
@@ -14,30 +20,38 @@ var tokenlist = (function() {
         target = service.clean(target);
         str = service.clean(str);
 
+        // split to array
         var targetArr = target.split(/\s+/);
 
         var map = {
             add: function(target, str) {
                 target.push(str);
-                return service.clean(target.join(' '));
+                return service.buildListStr(target);
             },
             remove: function(target, str) {
 
                 var i, len, rst = [];
+
                 for (i = 0, len = target.length; i < len; i++) {
+
                     if (target[i] !== str) {
                         rst.push(target[i]);
                     }
                 }
-                return service.clean(rst.join(' '));
+
+                return service.buildListStr(rst);
             },
             exsits: function(target, str) {
+
                 var i, len;
+
                 for (i = 0, len = target.length; i < len; i++) {
+
                     if (target[i] === str) {
                         return true;
                     }
                 }
+
                 return false;
             },
             item: function(t) {
@@ -61,8 +75,6 @@ var tokenlist = (function() {
         toggle: function(target, str) {
             return factory(target, str, this.contains(target, str) ? 'remove' : 'add');
         },
-
-        // return boolean
         contains: function(target, str) {
             return factory(target, str, 'exsits');
         },
