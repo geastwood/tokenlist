@@ -1,9 +1,13 @@
-if ("document" in self && !("classList" in document.createElement("_"))) {
+if ("document" in self && !("classListFoo" in document.createElement("_"))) {
 
     (function(view) {
 
         'use strict';
-        var descriptor, getter;
+
+        var descriptor,
+            getter,
+            property = 'className',
+            method = 'classListFoo';
 
         if (!('Element' in view)) return;
 
@@ -12,6 +16,7 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
 var tokenlist = (function() {
 
     'use strict';
+
     var service = {
         clean: function(token) {
 
@@ -82,7 +87,7 @@ var tokenlist = (function() {
 
     return {
         add: function(list, token) {
-            return factory(list, token, 'add');
+            return factory.call(this, list, token, 'add');
         },
         remove: function(list, token) {
             return factory(list, token, 'remove');
@@ -106,23 +111,33 @@ var tokenlist = (function() {
 
             getter = function() {
                 var that = this;
-                return {
+                var rtn = {
                     add: function(str) {
-                        that.className = tokenlist.add(that.className, str);
+                        that[property] = tokenlist.add(that[property], str);
+                        this.length += 1;
                     },
                     remove: function(str) {
-                        that.className = tokenlist.remove(that.className, str);
+                        that[property] = tokenlist.remove(that[property], str);
+                        this.length -= 1;
                     },
                     toggle: function(str) {
-                        that.className = tokenlist.toggle(that.className, str);
+                        that[property] = tokenlist.toggle(that[property], str);
                     },
                     contains: function(str) {
-                        return tokenlist.contains(that.className, str);
+                        return tokenlist.contains(that[property], str);
                     },
                     item: function(index) {
-                        return tokenlist.item(that.className, index);
+                        return tokenlist.item(that[property], index);
                     }
                 };
+                Object.defineProperty(rtn, 'length', {
+                    get: function() {
+                        //console.log(that[property]);
+                        return that[property] ? that[property].split(' ').length : 0;
+                    },
+                    set: function() {}
+                });
+                return rtn;
             };
             descriptor = {
                 get: getter,
@@ -131,15 +146,15 @@ var tokenlist = (function() {
             };
 
             try {
-                Object.defineProperty(view.Element.prototype, 'classList', descriptor);
+                Object.defineProperty(view.Element.prototype, method, descriptor);
             } catch (ex) {// IE 8 doesn't support enumerable:true
                 if (ex.number === -0x7FF5EC54) {
                     descriptor.enumerable = false;
-                    Object.defineProperty(view.Element.prototype, 'classList', descriptor);
+                    Object.defineProperty(view.Element.prototype, method, descriptor);
                 }
             }
         } else if (Object.prototype.__defineGetter__) {
-            view.Element.prototype.__defineGetter__('classList', getter);
+            view.Element.prototype.__defineGetter__('classListFoo', getter);
         }
 
 

@@ -32,6 +32,16 @@ describe('remove', function() {
         expect(tokenlist.remove(orig, 'fb')).toBe('foo bar');
     });
 });
+describe('length', function() {
+    var orig = 'foo bar';
+    beforeEach(function() {
+        orig = tokenlist.add(orig, 'fb');
+    });
+
+    it('should work', function() {
+
+    });
+});
 describe('contains', function() {
     var orig = 'foo bar fb foobarfb';
     it('should work', function() {

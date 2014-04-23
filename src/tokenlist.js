@@ -2,6 +2,7 @@
 var tokenlist = (function() {
 
     'use strict';
+
     var service = {
         clean: function(token) {
 
