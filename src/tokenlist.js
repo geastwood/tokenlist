@@ -11,41 +11,35 @@ var tokenlist = (function() {
                 return '';
             }
             return token.replace(/^\s+|\s+$/g, '');
-        },
-        join: function(arr) {
-            return arr.join(' ');
-        },
-        buildTokenList: function(arr) {
-            return this.clean(this.join(arr));
         }
     };
 
-    var factory = function(list, token, type) {
+    var factory = function(list, token, type, refArr) {
 
         // trim the input
         list = service.clean(list);
         token = service.clean(token);
 
         // split to array
-        var listArr = list.split(/\s+/);
+        var listArr = list ? list.split(/\s+/): [];
 
         var map = {
             add: function(list, token) {
                 list.push(token);
-                return service.buildTokenList(list);
+                return list;
             },
             remove: function(list, token) {
 
-                var i, len, rst = [];
+                var i, len;
 
                 for (i = 0, len = list.length; i < len; i++) {
 
-                    if (list[i] !== token) {
-                        rst.push(list[i]);
+                    if (list[i] === token) {
+                        list.splice(i, 1);
                     }
                 }
 
-                return service.buildTokenList(rst);
+                return list;
             },
             exsits: function(list, token) {
 
@@ -68,18 +62,19 @@ var tokenlist = (function() {
             }
         };
 
-        return map[type](listArr, token);
+        return map[type](refArr || listArr, token);
     };
 
     return {
-        add: function(list, token) {
-            return factory(list, token, 'add');
+
+        add: function(list, token, refArr) {
+            return factory(list, token, 'add', refArr);
         },
-        remove: function(list, token) {
-            return factory(list, token, 'remove');
+        remove: function(list, token, refArr) {
+            return factory(list, token, 'remove', refArr);
         },
-        toggle: function(list, token) {
-            return factory(list, token, this.contains(list, token) ? 'remove' : 'add');
+        toggle: function(list, token, refArr) {
+            return factory(list, token, this.contains(list, token) ? 'remove' : 'add', refArr);
         },
         contains: function(list, token) {
             return factory(list, token, 'exsits');

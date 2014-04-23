@@ -15,37 +15,31 @@ if ("document" in self && !("classListFoo" in document.createElement("_"))) {
         /* injector:js */
         /* endinjector */
 
+        var ClassList = function(element) {
+            this.element  = element;
+        };
+        ClassList.prototype = [];
+        ClassList.prototype.add = function(token) {
+            this.element[property] = tokenlist.add(this.element[property], token, ClassList.prototype).join(' ');
+        };
+        ClassList.prototype.remove = function(token) {
+            this.element[property] = tokenlist.remove(this.element[property], token, ClassList.prototype).join(' ');
+        };
+        ClassList.prototype.toggle = function(token) {
+            this.element[property] = tokenlist.toggle(this.element[property], token, ClassList.prototype).join(' ');
+        };
+        ClassList.prototype.contains = function(str) {
+            return tokenlist.contains(this.element[property], str);
+        };
+        ClassList.prototype.item = function(index) {
+            return tokenlist.item(this.element[property], index);
+        };
+        getter = function() {
+            return new ClassList(this);
+        };
+
         if (Object.defineProperty) {
 
-            getter = function() {
-                var that = this;
-                var rtn = {
-                    add: function(str) {
-                        that[property] = tokenlist.add(that[property], str);
-                        this.length += 1;
-                    },
-                    remove: function(str) {
-                        that[property] = tokenlist.remove(that[property], str);
-                        this.length -= 1;
-                    },
-                    toggle: function(str) {
-                        that[property] = tokenlist.toggle(that[property], str);
-                    },
-                    contains: function(str) {
-                        return tokenlist.contains(that[property], str);
-                    },
-                    item: function(index) {
-                        return tokenlist.item(that[property], index);
-                    }
-                };
-                Object.defineProperty(rtn, 'length', {
-                    get: function() {
-                        return that[property] ? that[property].split(' ').length : 0;
-                    },
-                    set: function() {}
-                });
-                return rtn;
-            };
             descriptor = {
                 get: getter,
                 enumerable: true,
@@ -63,7 +57,6 @@ if ("document" in self && !("classListFoo" in document.createElement("_"))) {
         } else if (Object.prototype.__defineGetter__) {
             view.Element.prototype.__defineGetter__('classListFoo', getter);
         }
-
 
     })(self);
 

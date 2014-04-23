@@ -1,3 +1,4 @@
+/* global self */
 if ("document" in self && !("classListFoo" in document.createElement("_"))) {
 
     (function(view) {
@@ -25,41 +26,35 @@ var tokenlist = (function() {
                 return '';
             }
             return token.replace(/^\s+|\s+$/g, '');
-        },
-        join: function(arr) {
-            return arr.join(' ');
-        },
-        buildTokenList: function(arr) {
-            return this.clean(this.join(arr));
         }
     };
 
-    var factory = function(list, token, type) {
+    var factory = function(list, token, type, refArr) {
 
         // trim the input
         list = service.clean(list);
         token = service.clean(token);
 
         // split to array
-        var listArr = list.split(/\s+/);
+        var listArr = list ? list.split(/\s+/): [];
 
         var map = {
             add: function(list, token) {
                 list.push(token);
-                return service.buildTokenList(list);
+                return list;
             },
             remove: function(list, token) {
 
-                var i, len, rst = [];
+                var i, len;
 
                 for (i = 0, len = list.length; i < len; i++) {
 
-                    if (list[i] !== token) {
-                        rst.push(list[i]);
+                    if (list[i] === token) {
+                        list.splice(i, 1);
                     }
                 }
 
-                return service.buildTokenList(rst);
+                return list;
             },
             exsits: function(list, token) {
 
@@ -82,18 +77,19 @@ var tokenlist = (function() {
             }
         };
 
-        return map[type](listArr, token);
+        return map[type](refArr || listArr, token);
     };
 
     return {
-        add: function(list, token) {
-            return factory.call(this, list, token, 'add');
+
+        add: function(list, token, refArr) {
+            return factory(list, token, 'add', refArr);
         },
-        remove: function(list, token) {
-            return factory(list, token, 'remove');
+        remove: function(list, token, refArr) {
+            return factory(list, token, 'remove', refArr);
         },
-        toggle: function(list, token) {
-            return factory(list, token, this.contains(list, token) ? 'remove' : 'add');
+        toggle: function(list, token, refArr) {
+            return factory(list, token, this.contains(list, token) ? 'remove' : 'add', refArr);
         },
         contains: function(list, token) {
             return factory(list, token, 'exsits');
@@ -107,38 +103,31 @@ var tokenlist = (function() {
 
         /* endinjector */
 
+        var ClassList = function(element) {
+            this.element  = element;
+        };
+        ClassList.prototype = [];
+        ClassList.prototype.add = function(token) {
+            this.element[property] = tokenlist.add(this.element[property], token, ClassList.prototype).join(' ');
+        };
+        ClassList.prototype.remove = function(token) {
+            this.element[property] = tokenlist.remove(this.element[property], token, ClassList.prototype).join(' ');
+        };
+        ClassList.prototype.toggle = function(token) {
+            this.element[property] = tokenlist.toggle(this.element[property], token, ClassList.prototype).join(' ');
+        };
+        ClassList.prototype.contains = function(str) {
+            return tokenlist.contains(this.element[property], str);
+        };
+        ClassList.prototype.item = function(index) {
+            return tokenlist.item(this.element[property], index);
+        };
+        getter = function() {
+            return new ClassList(this);
+        };
+
         if (Object.defineProperty) {
 
-            getter = function() {
-                var that = this;
-                var rtn = {
-                    add: function(str) {
-                        that[property] = tokenlist.add(that[property], str);
-                        this.length += 1;
-                    },
-                    remove: function(str) {
-                        that[property] = tokenlist.remove(that[property], str);
-                        this.length -= 1;
-                    },
-                    toggle: function(str) {
-                        that[property] = tokenlist.toggle(that[property], str);
-                    },
-                    contains: function(str) {
-                        return tokenlist.contains(that[property], str);
-                    },
-                    item: function(index) {
-                        return tokenlist.item(that[property], index);
-                    }
-                };
-                Object.defineProperty(rtn, 'length', {
-                    get: function() {
-                        //console.log(that[property]);
-                        return that[property] ? that[property].split(' ').length : 0;
-                    },
-                    set: function() {}
-                });
-                return rtn;
-            };
             descriptor = {
                 get: getter,
                 enumerable: true,
@@ -156,7 +145,6 @@ var tokenlist = (function() {
         } else if (Object.prototype.__defineGetter__) {
             view.Element.prototype.__defineGetter__('classListFoo', getter);
         }
-
 
     })(self);
 

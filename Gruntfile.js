@@ -1,7 +1,6 @@
 module.exports = function(grunt) {
 
     "use strict";
-    var fs = require('fs');
 
     grunt.initConfig({
         injector: {
@@ -20,8 +19,10 @@ module.exports = function(grunt) {
             }
         },
         uglify: {
-            files: {
-                'dist/classList.min.js': ['dist/classList.build.js']
+            dist: {
+                files: {
+                    'dist/classList.min.js': ['dist/classList.build.js']
+                }
             }
         },
         jasmine: {
@@ -41,8 +42,9 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-jasmine');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-injector');
 
     grunt.registerTask('default', 'watch');
-    grunt.registerTask('build', ['injector'/*,'uglify'*/]);
+    grunt.registerTask('build', ['injector', 'uglify']);
 };
