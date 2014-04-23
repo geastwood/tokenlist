@@ -1,4 +1,8 @@
-// TODO: duplicate loop
+(function() {
+
+    'use strict';
+    /* injector:js */
+    // TODO: duplicate loop
 var tokenlist = (function() {
 
     'use strict';
@@ -89,3 +93,8 @@ var tokenlist = (function() {
     };
 
 }());
+
+    /* endinjector */
+    var foo = 'bar';
+})();
+
