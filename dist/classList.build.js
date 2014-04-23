@@ -1,8 +1,14 @@
-(function() {
+if ("document" in self && !("classList" in document.createElement("_"))) {
 
-    'use strict';
-    /* injector:js */
-    // TODO: duplicate loop
+    (function(view) {
+
+        'use strict';
+        var descriptor, getter;
+
+        if (!('Element' in view)) return;
+
+        /* injector:js */
+        // TODO: duplicate loop
 var tokenlist = (function() {
 
     'use strict';
@@ -23,40 +29,40 @@ var tokenlist = (function() {
         }
     };
 
-    var factory = function(target, str, type) {
+    var factory = function(list, str, type) {
 
         // trim the input string
-        target = service.clean(target);
+        list = service.clean(list);
         str = service.clean(str);
 
         // split to array
-        var targetArr = target.split(/\s+/);
+        var listArr = list.split(/\s+/);
 
         var map = {
-            add: function(target, str) {
-                target.push(str);
-                return service.buildListStr(target);
+            add: function(list, str) {
+                list.push(str);
+                return service.buildListStr(list);
             },
-            remove: function(target, str) {
+            remove: function(list, str) {
 
                 var i, len, rst = [];
 
-                for (i = 0, len = target.length; i < len; i++) {
+                for (i = 0, len = list.length; i < len; i++) {
 
-                    if (target[i] !== str) {
-                        rst.push(target[i]);
+                    if (list[i] !== str) {
+                        rst.push(list[i]);
                     }
                 }
 
                 return service.buildListStr(rst);
             },
-            exsits: function(target, str) {
+            exsits: function(list, str) {
 
                 var i, len;
 
-                for (i = 0, len = target.length; i < len; i++) {
+                for (i = 0, len = list.length; i < len; i++) {
 
-                    if (target[i] === str) {
+                    if (list[i] === str) {
                         return true;
                     }
                 }
@@ -71,30 +77,72 @@ var tokenlist = (function() {
             }
         };
 
-        return map[type](targetArr, str);
+        return map[type](listArr, str);
     };
 
     return {
-        add: function(target, str) {
-            return factory(target, str, 'add');
+        add: function(list, str) {
+            return factory(list, str, 'add');
         },
-        remove: function(target, str) {
-            return factory(target, str, 'remove');
+        remove: function(list, str) {
+            return factory(list, str, 'remove');
         },
-        toggle: function(target, str) {
-            return factory(target, str, this.contains(target, str) ? 'remove' : 'add');
+        toggle: function(list, str) {
+            return factory(list, str, this.contains(list, str) ? 'remove' : 'add');
         },
-        contains: function(target, str) {
-            return factory(target, str, 'exsits');
+        contains: function(list, str) {
+            return factory(list, str, 'exsits');
         },
-        item: function(target, index) {
-            return factory(target, null, 'item')(index);
+        item: function(list, index) {
+            return factory(list, null, 'item')(index);
         }
     };
 
 }());
 
-    /* endinjector */
-    var foo = 'bar';
-})();
+        /* endinjector */
 
+        if (Object.defineProperty) {
+
+            getter = function() {
+                var that = this;
+                return {
+                    add: function(str) {
+                        that.className = tokenlist.add(that.className, str);
+                    },
+                    remove: function(str) {
+                        that.className = tokenlist.remove(that.className, str);
+                    },
+                    toggle: function(str) {
+                        that.className = tokenlist.toggle(that.className, str);
+                    },
+                    contains: function(str) {
+                        return tokenlist.contains(that.className, str);
+                    },
+                    item: function(index) {
+                        return tokenlist.item(that.className, index);
+                    }
+                };
+            };
+            descriptor = {
+                get: getter,
+                enumerable: true,
+                configurable: true
+            };
+
+            try {
+                Object.defineProperty(view.Element.prototype, 'classList', descriptor);
+            } catch (ex) {// IE 8 doesn't support enumerable:true
+                if (ex.number === -0x7FF5EC54) {
+                    descriptor.enumerable = false;
+                    Object.defineProperty(view.Element.prototype, 'classList', descriptor);
+                }
+            }
+        } else if (Object.prototype.__defineGetter__) {
+            view.Element.prototype.__defineGetter__('classList', getter);
+        }
+
+
+    })(self);
+
+}
