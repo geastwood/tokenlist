@@ -61,37 +61,3 @@ describe('item', function() {
         expect(tokenlist.item('foo ', 2)).toBe(undefined);
     });
 });
-describe('wrapper', function() {
-
-    var People;
-    beforeEach(function() {
-        People = function() {};
-        People.prototype.skills = 'none';
-        Object.defineProperty(People.prototype, 'skillManager', {
-            get: function() {
-                var that = this;
-                return {
-                    add: function(str) {
-                        return tokenlist.add(that.skills, str);
-                    },
-                    remove: function(str) {
-                        return tokenlist.remove(that.skills, str);
-                    },
-                    item: function(index) {
-                        return tokenlist.item(that.skills, index);
-                    }
-                }
-            }
-        });
-    });
-    it('add', function() {
-        var fei = new People();
-        fei.skills = 'js node php';
-        expect(fei.skillManager.add('css')).toBe('js node php css');
-    });
-    it('remove', function() {
-        var fei = new People();
-        fei.skills = 'js node php';
-        expect(fei.skillManager.remove('node')).toBe('js php');
-    });
-});

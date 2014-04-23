@@ -3,56 +3,56 @@ var tokenlist = (function() {
 
     'use strict';
     var service = {
-        clean: function(str) {
+        clean: function(token) {
 
             /* jshint eqnull: true */
-            if (str == null) {
+            if (token == null) {
                 return '';
             }
-            return str.replace(/^\s+|\s+$/g, '');
+            return token.replace(/^\s+|\s+$/g, '');
         },
         join: function(arr) {
             return arr.join(' ');
         },
-        buildListStr: function(arr) {
+        buildTokenList: function(arr) {
             return this.clean(this.join(arr));
         }
     };
 
-    var factory = function(list, str, type) {
+    var factory = function(list, token, type) {
 
-        // trim the input string
+        // trim the input
         list = service.clean(list);
-        str = service.clean(str);
+        token = service.clean(token);
 
         // split to array
         var listArr = list.split(/\s+/);
 
         var map = {
-            add: function(list, str) {
-                list.push(str);
-                return service.buildListStr(list);
+            add: function(list, token) {
+                list.push(token);
+                return service.buildTokenList(list);
             },
-            remove: function(list, str) {
+            remove: function(list, token) {
 
                 var i, len, rst = [];
 
                 for (i = 0, len = list.length; i < len; i++) {
 
-                    if (list[i] !== str) {
+                    if (list[i] !== token) {
                         rst.push(list[i]);
                     }
                 }
 
-                return service.buildListStr(rst);
+                return service.buildTokenList(rst);
             },
-            exsits: function(list, str) {
+            exsits: function(list, token) {
 
                 var i, len;
 
                 for (i = 0, len = list.length; i < len; i++) {
 
-                    if (list[i] === str) {
+                    if (list[i] === token) {
                         return true;
                     }
                 }
@@ -67,21 +67,21 @@ var tokenlist = (function() {
             }
         };
 
-        return map[type](listArr, str);
+        return map[type](listArr, token);
     };
 
     return {
-        add: function(list, str) {
-            return factory(list, str, 'add');
+        add: function(list, token) {
+            return factory(list, token, 'add');
         },
-        remove: function(list, str) {
-            return factory(list, str, 'remove');
+        remove: function(list, token) {
+            return factory(list, token, 'remove');
         },
-        toggle: function(list, str) {
-            return factory(list, str, this.contains(list, str) ? 'remove' : 'add');
+        toggle: function(list, token) {
+            return factory(list, token, this.contains(list, token) ? 'remove' : 'add');
         },
-        contains: function(list, str) {
-            return factory(list, str, 'exsits');
+        contains: function(list, token) {
+            return factory(list, token, 'exsits');
         },
         item: function(list, index) {
             return factory(list, null, 'item')(index);
