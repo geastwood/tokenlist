@@ -1,5 +1,5 @@
 /* global self */
-if ("document" in self && !("classListFoo" in document.createElement("_"))) {
+if ("document" in self && !("classList" in document.createElement("_"))) {
 
     (function(view) {
 
@@ -8,13 +8,12 @@ if ("document" in self && !("classListFoo" in document.createElement("_"))) {
         var descriptor,
             getter,
             property = 'className',
-            method = 'classListFoo';
+            method = 'classList';
 
         if (!('Element' in view)) return;
 
         /* injector:js */
-        // TODO: duplicate loop
-var tokenlist = (function() {
+        var tokenlist = (function() {
 
     'use strict';
 
@@ -77,19 +76,19 @@ var tokenlist = (function() {
             }
         };
 
-        return map[type](refArr || listArr, token);
+        return map[type](listArr, token);
     };
 
     return {
 
-        add: function(list, token, refArr) {
-            return factory(list, token, 'add', refArr);
+        add: function(list, token) {
+            return factory(list, token, 'add');
         },
-        remove: function(list, token, refArr) {
-            return factory(list, token, 'remove', refArr);
+        remove: function(list, token) {
+            return factory(list, token, 'remove');
         },
-        toggle: function(list, token, refArr) {
-            return factory(list, token, this.contains(list, token) ? 'remove' : 'add', refArr);
+        toggle: function(list, token) {
+            return factory(list, token, this.contains(list, token) ? 'remove' : 'add');
         },
         contains: function(list, token) {
             return factory(list, token, 'exsits');
@@ -103,18 +102,21 @@ var tokenlist = (function() {
 
         /* endinjector */
 
+        function clean(list) {
+            return list ? list.split(' ') : [];
+        }
         var ClassList = function(element) {
             this.element  = element;
         };
         ClassList.prototype = [];
         ClassList.prototype.add = function(token) {
-            this.element[property] = tokenlist.add(this.element[property], token, ClassList.prototype).join(' ');
+            this.element[property] = tokenlist.add(this.element[property], token).join(' ');
         };
         ClassList.prototype.remove = function(token) {
-            this.element[property] = tokenlist.remove(this.element[property], token, ClassList.prototype).join(' ');
+            this.element[property] = tokenlist.remove(this.element[property], token).join(' ');
         };
         ClassList.prototype.toggle = function(token) {
-            this.element[property] = tokenlist.toggle(this.element[property], token, ClassList.prototype).join(' ');
+            this.element[property] = tokenlist.toggle(this.element[property], token).join(' ');
         };
         ClassList.prototype.contains = function(str) {
             return tokenlist.contains(this.element[property], str);

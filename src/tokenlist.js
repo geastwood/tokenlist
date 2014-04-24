@@ -1,4 +1,3 @@
-// TODO: duplicate loop
 var tokenlist = (function() {
 
     'use strict';
@@ -62,19 +61,19 @@ var tokenlist = (function() {
             }
         };
 
-        return map[type](refArr || listArr, token);
+        return map[type](listArr, token);
     };
 
     return {
 
-        add: function(list, token, refArr) {
-            return factory(list, token, 'add', refArr);
+        add: function(list, token) {
+            return factory(list, token, 'add');
         },
-        remove: function(list, token, refArr) {
-            return factory(list, token, 'remove', refArr);
+        remove: function(list, token) {
+            return factory(list, token, 'remove');
         },
-        toggle: function(list, token, refArr) {
-            return factory(list, token, this.contains(list, token) ? 'remove' : 'add', refArr);
+        toggle: function(list, token) {
+            return factory(list, token, this.contains(list, token) ? 'remove' : 'add');
         },
         contains: function(list, token) {
             return factory(list, token, 'exsits');

@@ -1,5 +1,5 @@
 /* global self */
-if ("document" in self && !("classListFoo" in document.createElement("_"))) {
+if ("document" in self && !("classList" in document.createElement("_"))) {
 
     (function(view) {
 
@@ -8,25 +8,28 @@ if ("document" in self && !("classListFoo" in document.createElement("_"))) {
         var descriptor,
             getter,
             property = 'className',
-            method = 'classListFoo';
+            method = 'classList';
 
         if (!('Element' in view)) return;
 
         /* injector:js */
         /* endinjector */
 
+        function clean(list) {
+            return list ? list.split(' ') : [];
+        }
         var ClassList = function(element) {
             this.element  = element;
         };
         ClassList.prototype = [];
         ClassList.prototype.add = function(token) {
-            this.element[property] = tokenlist.add(this.element[property], token, ClassList.prototype).join(' ');
+            this.element[property] = tokenlist.add(this.element[property], token).join(' ');
         };
         ClassList.prototype.remove = function(token) {
-            this.element[property] = tokenlist.remove(this.element[property], token, ClassList.prototype).join(' ');
+            this.element[property] = tokenlist.remove(this.element[property], token).join(' ');
         };
         ClassList.prototype.toggle = function(token) {
-            this.element[property] = tokenlist.toggle(this.element[property], token, ClassList.prototype).join(' ');
+            this.element[property] = tokenlist.toggle(this.element[property], token).join(' ');
         };
         ClassList.prototype.contains = function(str) {
             return tokenlist.contains(this.element[property], str);
