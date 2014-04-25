@@ -66,11 +66,11 @@ describe('toggle', function() {
     });
 
     it('should work', function() {
-        div.classList.toggle('bar');
+        expect(div.classList.toggle('bar')).toBe(false);
         expect(div.className).toBe('foo fb bf');
-        div.classList.toggle('bar');
+        expect(div.classList.toggle('bar')).toBe(true);
         expect(div.className).toBe('foo fb bf bar');
-        div.classList.toggle('fb');
+        expect(div.classList.toggle('fb')).toBe(false);
         expect(div.className).toBe('foo bf bar');
     });
 

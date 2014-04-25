@@ -87,7 +87,7 @@ var tokenlist = (function() {
             return factory(list, token, 'remove').list;
         },
         toggle: function(list, token) {
-            return factory(list, token, this.contains(list, token) ? 'remove' : 'add').status;
+            return factory(list, token, this.contains(list, token) ? 'remove' : 'add');
         },
         contains: function(list, token) {
             return factory(list, token, 'exists');
