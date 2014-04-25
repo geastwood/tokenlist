@@ -22,6 +22,13 @@ describe('add', function() {
     it('should work', function() {
         expect(tokenlist.add(orig, 'bar')).toEqual(['foo', 'bar']);
     });
+    it('should trim the input', function() {
+        expect(tokenlist.add(orig, ' bar  ')).toEqual(['foo', 'bar']);
+    });
+    it('should not add, if same token is in the list', function() {
+        orig = tokenlist.add(orig, 'bar').join(' ');
+        expect(tokenlist.add(orig, 'bar')).toEqual(['foo', 'bar']);
+    });
 });
 describe('remove', function() {
     var orig = ' foo ';
@@ -53,13 +60,10 @@ describe('contains', function() {
 });
 describe('toggle', function() {
     it('should work', function() {
-        expect(tokenlist.toggle('foo bar fb foobarfb', 'foo')).toEqual(['bar', 'fb', 'foobarfb']);
-        expect(tokenlist.toggle('foo bar fb foobarfb', 'fei')).toEqual(['foo', 'bar', 'fb', 'foobarfb', 'fei']);
-        expect(tokenlist.toggle('foo bar fb foobarfb fei', 'fei')).toEqual(['foo', 'bar', 'fb', 'foobarfb']);
-        //expect(tokenlist.toggle('', 'foo')).toEuqal(['foo']);
-        //expect(tokenlist.toggle('foo', 'foo')).toEuqal([]);
-        expect(tokenlist.toggle(' foo ', ' bar')).toEqual(['foo', 'bar']);
-        expect(tokenlist.toggle('foo ', 'bar')).toEqual(['foo', 'bar']);
+        expect(tokenlist.toggle('foo bar fb foobarfb', 'foo')).toEqual(false);
+        expect(tokenlist.toggle('foo bar fb foobarfb', 'fei')).toEqual(true);
+        expect(tokenlist.toggle('foo bar fb foobarfb', 'bar')).toEqual(false);
+        expect(tokenlist.toggle('foo bar fb foobarfb', 'foobarf2b')).toEqual(true);
     });
 });
 describe('item', function() {
