@@ -130,7 +130,9 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
             this.element[property] = tokenlist.remove(this.element[property], token).join(' ');
         };
         ClassList.prototype.toggle = function(token) {
-            this.element[property] = tokenlist.toggle(this.element[property], token).join(' ');
+            var rst = tokenlist.toggle(this.element[property], token);
+            this.element[property] = rst.list.join(' ');
+            return rst.status;
         };
         ClassList.prototype.contains = function(str) {
             return tokenlist.contains(this.element[property], str);

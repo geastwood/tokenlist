@@ -60,10 +60,10 @@ describe('contains', function() {
 });
 describe('toggle', function() {
     it('should work', function() {
-        expect(tokenlist.toggle('foo bar fb foobarfb', 'foo')).toEqual(false);
-        expect(tokenlist.toggle('foo bar fb foobarfb', 'fei')).toEqual(true);
-        expect(tokenlist.toggle('foo bar fb foobarfb', 'bar')).toEqual(false);
-        expect(tokenlist.toggle('foo bar fb foobarfb', 'foobarf2b')).toEqual(true);
+        expect(tokenlist.toggle('foo bar fb foobarfb', 'foo').status).toEqual(false);
+        expect(tokenlist.toggle('foo bar fb foobarfb', 'fei').status).toEqual(true);
+        expect(tokenlist.toggle('foo bar fb foobarfb', 'bar').status).toEqual(false);
+        expect(tokenlist.toggle('foo bar fb foobarfb', 'foobarf2b').status).toEqual(true);
     });
 });
 describe('item', function() {
