@@ -60,7 +60,7 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
                 }
             }
         } else if (Object.prototype.__defineGetter__) {
-            view.Element.prototype.__defineGetter__('classListFoo', getter);
+            view.Element.prototype.__defineGetter__('classList', getter);
         }
 
     })(self);
