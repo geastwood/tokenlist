@@ -28,7 +28,7 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
         }
     };
 
-    var factory = function(list, token, type, refArr) {
+    var factory = function(list, token, type) {
 
         // trim the input
         list = service.clean(list);
@@ -39,23 +39,37 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
 
         var map = {
             add: function(list, token) {
-                list.push(token);
-                return list;
+
+                var status = false;
+
+                if (!this.exists(list, token)) {
+                    list.push(token);
+                    status = true;
+                }
+
+                return {
+                    status: status,
+                    list: list
+                };
             },
             remove: function(list, token) {
 
-                var i, len;
+                var i, len, status = false;
 
                 for (i = 0, len = list.length; i < len; i++) {
 
                     if (list[i] === token) {
                         list.splice(i, 1);
+                        status = true;
                     }
                 }
 
-                return list;
+                return {
+                    status: !status,
+                    list: list
+                };
             },
-            exsits: function(list, token) {
+            exists: function(list, token) {
 
                 var i, len;
 
@@ -82,16 +96,16 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
     return {
 
         add: function(list, token) {
-            return factory(list, token, 'add');
+            return factory(list, token, 'add').list;
         },
         remove: function(list, token) {
-            return factory(list, token, 'remove');
+            return factory(list, token, 'remove').list;
         },
         toggle: function(list, token) {
-            return factory(list, token, this.contains(list, token) ? 'remove' : 'add');
+            return factory(list, token, this.contains(list, token) ? 'remove' : 'add').status;
         },
         contains: function(list, token) {
-            return factory(list, token, 'exsits');
+            return factory(list, token, 'exists');
         },
         item: function(list, index) {
             return factory(list, null, 'item')(index);

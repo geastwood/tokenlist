@@ -6,7 +6,7 @@ module.exports = function(grunt) {
         injector: {
             classList: {
                 options: {
-                    template: 'dist/classList.wrapper.js',
+                    template: 'src/classList.wrapper.js',
                     destFile: 'dist/classList.build.js',
                     starttag: '/* injector:{{ext}} */',
                     endtag: '/* endinjector */',
@@ -46,5 +46,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-injector');
 
     grunt.registerTask('default', 'watch');
-    grunt.registerTask('build', ['injector'/*, 'uglify'*/]);
+    grunt.registerTask('build', ['injector', 'uglify']);
 };
