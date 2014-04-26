@@ -1,20 +1,13 @@
 {
   "name": "tokenlist",
-  "version": "0.0.0",
-  "description": "tokenlist implementation",
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "version": "0.1.0",
+  "description": "tokenlist and classList implementation",
   "repository": {
     "type": "git",
     "url": "git://github.com/geastwood/tokenlist.git"
   },
   "keywords": [
-    "tokenlist"
+    "tokenlist", "classList", "polyfill"
   ],
   "author": "Fei Liu <liu.feiwood@gmail.com>",
   "license": "MIT",
