@@ -46,5 +46,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-injector');
 
     grunt.registerTask('default', 'watch');
+    grunt.registerTask('test', 'jasmine');
     grunt.registerTask('build', ['injector', 'uglify']);
 };
