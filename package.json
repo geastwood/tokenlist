@@ -6,6 +6,9 @@
     "type": "git",
     "url": "git://github.com/geastwood/tokenlist.git"
   },
+  "scripts": {
+    "test": "vows --spec"
+  },
   "keywords": [
     "tokenlist", "classList", "polyfill"
   ],
