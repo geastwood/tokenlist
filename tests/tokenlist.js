@@ -30,6 +30,13 @@ describe('add', function() {
         expect(tokenlist.add(orig, 'bar')).toEqual(['foo', 'bar']);
     });
 });
+describe('add multiple', function() {
+    var orig = ' foo ';
+    it('should work', function() {
+        expect(tokenlist.add(orig, 'bar', ' fb ', 'fei ', ' liu')).toEqual(['foo', 'bar', 'fb', 'fei', 'liu'])
+        expect(tokenlist.add(orig)).toEqual(['foo']);
+    });
+});
 describe('remove', function() {
     var orig = ' foo ';
     origArr = tokenlist.add(orig, 'bar');
