@@ -22,14 +22,15 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
             this.element  = element;
         };
         ClassList.prototype = [];
-        ClassList.prototype.add = function(token) {
-            this.element[property] = tokenlist.add(this.element[property], token).join(' ');
+        ClassList.prototype.add = function() {
+            var token = Array.prototype.slice.call(arguments);
+            this.element[property] = tokenlist.apply(null, [this.element[property]].concat(token)).join(' ');
         };
         ClassList.prototype.remove = function(token) {
             this.element[property] = tokenlist.remove(this.element[property], token).join(' ');
         };
-        ClassList.prototype.toggle = function(token) {
-            var rst = tokenlist.toggle(this.element[property], token);
+        ClassList.prototype.toggle = function(token, force) {
+            var rst = tokenlist.toggle(this.element[property], token, force);
             this.element[property] = rst.list.join(' ');
             return rst.status;
         };

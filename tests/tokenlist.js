@@ -33,7 +33,7 @@ describe('add', function() {
 describe('add multiple', function() {
     var orig = ' foo ';
     it('should work', function() {
-        expect(tokenlist.add(orig, 'bar', ' fb ', 'fei ', ' liu')).toEqual(['foo', 'bar', 'fb', 'fei', 'liu'])
+        expect(tokenlist.add(orig, 'bar', ' fb ', 'fei ', ' liu')).toEqual(['foo', 'bar', 'fb', 'fei', 'liu']);
         expect(tokenlist.add(orig)).toEqual(['foo']);
     });
 });
@@ -43,16 +43,6 @@ describe('remove', function() {
     it('should work', function() {
         expect(origArr).toEqual(['foo', 'bar']);
         expect(tokenlist.remove('foo bar fb', 'fb')).toEqual(['foo', 'bar']);
-    });
-});
-xdescribe('length', function() {
-    var orig = 'foo bar';
-    beforeEach(function() {
-        orig = tokenlist.add(orig, 'fb');
-    });
-
-    it('should work', function() {
-
     });
 });
 describe('contains', function() {
@@ -71,6 +61,12 @@ describe('toggle', function() {
         expect(tokenlist.toggle('foo bar fb foobarfb', 'fei').status).toEqual(true);
         expect(tokenlist.toggle('foo bar fb foobarfb', 'bar').status).toEqual(false);
         expect(tokenlist.toggle('foo bar fb foobarfb', 'foobarf2b').status).toEqual(true);
+    });
+    it('should work with force flag', function() {
+        expect(tokenlist.toggle('bar fb foobarfb', 'foo', false).status).toBe(false);
+        expect(tokenlist.toggle('bar fb foobarfb', 'foo', false).list).toEqual(['bar', 'fb', 'foobarfb']);
+        expect(tokenlist.toggle('bar fb foobarfb', 'foo', true).status).toBe(true);
+        expect(tokenlist.toggle('bar fb foobarfb', 'foo', true).list).toEqual(['bar', 'fb', 'foobarfb', 'foo']);
     });
 });
 describe('item', function() {

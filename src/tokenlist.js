@@ -36,7 +36,7 @@ var tokenlist = (function() {
                 }
 
                 return {
-                    status: status,
+                    status: true,
                     list: list
                 };
             },
@@ -54,18 +54,17 @@ var tokenlist = (function() {
             },
             remove: function(list, token) {
 
-                var i, len, status = false;
+                var i, len;
 
                 for (i = 0, len = list.length; i < len; i++) {
 
                     if (list[i] === token) {
                         list.splice(i, 1);
-                        status = true;
                     }
                 }
 
                 return {
-                    status: !status,
+                    status: false,
                     list: list
                 };
             },
@@ -102,8 +101,9 @@ var tokenlist = (function() {
         remove: function(list, token) {
             return factory(list, token, 'remove').list;
         },
-        toggle: function(list, token) {
-            return factory(list, token, this.contains(list, token) ? 'remove' : 'addOne');
+        toggle: function(list, token, force) {
+            var type = (typeof force === 'undefined') ? !this.contains(list, token) : force;
+            return factory(list, token, type ? 'addOne' : 'remove');
         },
         contains: function(list, token) {
             return factory(list, token, 'exists');
