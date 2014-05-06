@@ -18,10 +18,8 @@ var TokenList;
     TokenList.prototype.add = function(/* multiple tokens */) {
 
         var i,
-            j,
             len,
             token,
-            callback,
             tokens = Array.prototype.slice.call(arguments);
 
         for (i = 0, len = tokens.length; i < len; i++) {
@@ -33,8 +31,9 @@ var TokenList;
             }
         }
 
-
-        callback.fn.call(callback.context, this);
+        if (callback.fn) {
+            callback.fn.call(callback.context, this);
+        }
 
     };
     TokenList.prototype.remove = function(token) {
@@ -48,6 +47,10 @@ var TokenList;
             if (this[i] === token) {
                 this.splice(i, 1);
             }
+        }
+
+        if (callback.fn) {
+            callback.fn.call(callback.context, this);
         }
     };
     TokenList.prototype.toggle = function(token, force) {

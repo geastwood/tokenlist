@@ -33,10 +33,8 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
     TokenList.prototype.add = function(/* multiple tokens */) {
 
         var i,
-            j,
             len,
             token,
-            callback,
             tokens = Array.prototype.slice.call(arguments);
 
         for (i = 0, len = tokens.length; i < len; i++) {
@@ -48,8 +46,9 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
             }
         }
 
-
-        callback.fn.call(callback.context, this);
+        if (callback.fn) {
+            callback.fn.call(callback.context, this);
+        }
 
     };
     TokenList.prototype.remove = function(token) {
@@ -63,6 +62,10 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
             if (this[i] === token) {
                 this.splice(i, 1);
             }
+        }
+
+        if (callback.fn) {
+            callback.fn.call(callback.context, this);
         }
     };
     TokenList.prototype.toggle = function(token, force) {
@@ -103,13 +106,19 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
 
         /* endinjector */
 
+        //bind(tokenlist, list)
         getter = function() {
+            var list = this[property] ? this[property].split(' ') : [];
             var tokenlist = new TokenList();
-            tokenlist.registerCallback(function(list) {
-                console.log(list);
+            var methods = ['add', 'remove', 'toggle', 'contains', 'item', 'registerCallback'];
+            for (var i = 0, len = methods.length; i < len; i++) {
+                list[methods[i]] = tokenlist[methods[i]];
+            }
+            list.registerCallback(function(list) {
                 this[property] = list.join(' ');
             }, this);
-            return tokenlist;
+
+            return list;
         };
 
         if (Object.defineProperty) {

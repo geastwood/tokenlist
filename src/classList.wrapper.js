@@ -15,12 +15,19 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
         /* injector:js */
         /* endinjector */
 
+        //bind(tokenlist, list)
         getter = function() {
+            var list = this[property] ? this[property].split(' ') : [];
             var tokenlist = new TokenList();
-            tokenlist.registerCallback(function(list) {
+            var methods = ['add', 'remove', 'toggle', 'contains', 'item', 'registerCallback'];
+            for (var i = 0, len = methods.length; i < len; i++) {
+                list[methods[i]] = tokenlist[methods[i]];
+            }
+            list.registerCallback(function(list) {
                 this[property] = list.join(' ');
             }, this);
-            return tokenlist;
+
+            return list;
         };
 
         if (Object.defineProperty) {
