@@ -13,152 +13,103 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
         if (!('Element' in view)) return;
 
         /* injector:js */
-        var tokenlist = (function() {
+        var TokenList;
+(function() {
 
     'use strict';
 
-    var service = {
-        clean: function(token) {
+    var clean = function(token) {
 
-            /* jshint eqnull: true */
-            if (token == null) {
-                return '';
+        /* jshint eqnull: true */
+        if (token == null) {
+            return '';
+        }
+        return token.replace(/^\s+|\s+$/g, '');
+    };
+    var callback = {};
+
+    TokenList = function() {};
+    TokenList.prototype = [];
+    TokenList.prototype.add = function(/* multiple tokens */) {
+
+        var i,
+            j,
+            len,
+            token,
+            callback,
+            tokens = Array.prototype.slice.call(arguments);
+
+        for (i = 0, len = tokens.length; i < len; i++) {
+
+            token = clean(tokens[i]);
+
+            if (!this.contains(token)) {
+                this.push(token);
             }
-            return token.replace(/^\s+|\s+$/g, '');
+        }
+
+
+        callback.fn.call(callback.context, this);
+
+    };
+    TokenList.prototype.remove = function(token) {
+
+        var i, len;
+
+        token = clean(token);
+
+        for (i = 0, len = this.length; i < len; i++) {
+
+            if (this[i] === token) {
+                this.splice(i, 1);
+            }
         }
     };
+    TokenList.prototype.toggle = function(token, force) {
 
-    var factory = function(list, token, type) {
+        token = clean(token);
 
-        // trim the input
-        list = service.clean(list);
+        var type = (typeof force === 'undefined') ? !this.contains(token) : force;
+        var method = type ? 'add' : 'remove';
 
-        if (typeof token === 'string') {
-            token = service.clean(token);
-        }
-
-        // split to array
-        var listArr = list ? list.split(/\s+/): [];
-
-        var map = {
-            addOne: function(list, token) {
-
-                var status = false;
-
-                if (!this.exists(list, token)) {
-                    list.push(token);
-                    status = true;
-                }
-
-                return {
-                    status: true,
-                    list: list
-                };
-            },
-            addMultiple: function(list, token) {
-
-                var i, len;
-
-                for (i = 0, len = token.length; i < len; i++) {
-                    if (!this.exists(list, token[i])) {
-                        list.push(service.clean(token[i]));
-                    }
-                }
-
-                return list;
-            },
-            remove: function(list, token) {
-
-                var i, len;
-
-                for (i = 0, len = list.length; i < len; i++) {
-
-                    if (list[i] === token) {
-                        list.splice(i, 1);
-                    }
-                }
-
-                return {
-                    status: false,
-                    list: list
-                };
-            },
-            exists: function(list, token) {
-
-                var i, len;
-
-                for (i = 0, len = list.length; i < len; i++) {
-
-                    if (list[i] === token) {
-                        return true;
-                    }
-                }
-
-                return false;
-            },
-            item: function(t) {
-
-                return function(index) {
-                    return t[index];
-                };
-            }
-        };
-
-        return map[type](listArr, token);
+        this[method].call(this, token);
+        return method === 'add' ? true : false;
     };
+    TokenList.prototype.contains = function(token) {
 
-    return {
+        var i, len;
 
-        add: function(list) {
-            var token = Array.prototype.slice.call(arguments, 1);
-            return factory(list, token, 'addMultiple');
-        },
-        remove: function(list, token) {
-            return factory(list, token, 'remove').list;
-        },
-        toggle: function(list, token, force) {
-            var type = (typeof force === 'undefined') ? !this.contains(list, token) : force;
-            return factory(list, token, type ? 'addOne' : 'remove');
-        },
-        contains: function(list, token) {
-            return factory(list, token, 'exists');
-        },
-        item: function(list, index) {
-            return factory(list, null, 'item')(index);
+        token = clean(token);
+
+        for (i = 0, len = this.length; i < len; i++) {
+
+            if (this[i] === token) {
+                return true;
+            }
         }
+
+        return false;
+
+    };
+    TokenList.prototype.item = function(index) {
+        return this[index];
+    };
+    TokenList.prototype.registerCallback = function(fn, context) {
+        callback.fn = fn;
+        callback.context = context;
     };
 
 }());
 
         /* endinjector */
 
-        function clean(list) {
-            return list ? list.split(' ') : [];
-        }
-        var ClassList = function(element) {
-            this.element  = element;
-        };
-        ClassList.prototype = [];
-        ClassList.prototype.add = function() {
-            var token = Array.prototype.slice.call(arguments);
-            this.element[property] = tokenlist.add.apply(null, [this.element[property]].concat(token)).join(' ');
-        };
-        ClassList.prototype.remove = function(token) {
-            this.element[property] = tokenlist.remove(this.element[property], token).join(' ');
-        };
-        ClassList.prototype.toggle = function(token, force) {
-            var rst = tokenlist.toggle(this.element[property], token, force);
-            this.element[property] = rst.list.join(' ');
-            return rst.status;
-        };
-        ClassList.prototype.contains = function(str) {
-            return tokenlist.contains(this.element[property], str);
-        };
-        ClassList.prototype.item = function(index) {
-            return tokenlist.item(this.element[property], index);
-        };
         getter = function() {
-            return new ClassList(this);
+            var tokenlist = new TokenList();
+            tokenlist.registerCallback(function(list) {
+                console.log(list);
+                this[property] = list.join(' ');
+            }, this);
+            return tokenlist;
         };
 
         if (Object.defineProperty) {
