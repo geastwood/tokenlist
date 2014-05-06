@@ -24,7 +24,7 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
         ClassList.prototype = [];
         ClassList.prototype.add = function() {
             var token = Array.prototype.slice.call(arguments);
-            this.element[property] = tokenlist.apply(null, [this.element[property]].concat(token)).join(' ');
+            this.element[property] = tokenlist.add.apply(null, [this.element[property]].concat(token)).join(' ');
         };
         ClassList.prototype.remove = function(token) {
             this.element[property] = tokenlist.remove(this.element[property], token).join(' ');

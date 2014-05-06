@@ -37,6 +37,10 @@ describe('add', function() {
         div.classList.add('bf');
         expect(div.className).toBe('foo bar fb bf');
     });
+    it('should work with multiple add', function() {
+        div.classList.add('fb', 'bf', 'ffb', 'bbf');
+        expect(div.className).toBe('foo bar fb bf ffb bbf');
+    });
 });
 
 describe('remove', function() {
@@ -79,5 +83,18 @@ describe('toggle', function() {
         div.classList.toggle('remove');
         div.classList.toggle('length');
         expect(div.className).toBe('foo bar fb bf add remove length');
+    });
+
+    it('should work force flag', function() {
+        div.classList.toggle('foo', true);
+        expect(div.className).toBe('foo bar fb bf');
+        div.classList.toggle('foo', false);
+        expect(div.className).toBe('bar fb bf');
+        div.classList.toggle('add', false);
+        expect(div.className).toBe('bar fb bf');
+        div.classList.toggle('bf', true);
+        expect(div.className).toBe('bar fb bf');
+        div.classList.toggle('bar', false);
+        expect(div.className).toBe('fb bf');
     });
 });

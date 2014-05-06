@@ -32,13 +32,16 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
 
         // trim the input
         list = service.clean(list);
-        token = service.clean(token);
+
+        if (typeof token === 'string') {
+            token = service.clean(token);
+        }
 
         // split to array
         var listArr = list ? list.split(/\s+/): [];
 
         var map = {
-            add: function(list, token) {
+            addOne: function(list, token) {
 
                 var status = false;
 
@@ -48,24 +51,35 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
                 }
 
                 return {
-                    status: status,
+                    status: true,
                     list: list
                 };
             },
+            addMultiple: function(list, token) {
+
+                var i, len;
+
+                for (i = 0, len = token.length; i < len; i++) {
+                    if (!this.exists(list, token[i])) {
+                        list.push(service.clean(token[i]));
+                    }
+                }
+
+                return list;
+            },
             remove: function(list, token) {
 
-                var i, len, status = false;
+                var i, len;
 
                 for (i = 0, len = list.length; i < len; i++) {
 
                     if (list[i] === token) {
                         list.splice(i, 1);
-                        status = true;
                     }
                 }
 
                 return {
-                    status: !status,
+                    status: false,
                     list: list
                 };
             },
@@ -95,14 +109,16 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
 
     return {
 
-        add: function(list, token) {
-            return factory(list, token, 'add').list;
+        add: function(list) {
+            var token = Array.prototype.slice.call(arguments, 1);
+            return factory(list, token, 'addMultiple');
         },
         remove: function(list, token) {
             return factory(list, token, 'remove').list;
         },
-        toggle: function(list, token) {
-            return factory(list, token, this.contains(list, token) ? 'remove' : 'add');
+        toggle: function(list, token, force) {
+            var type = (typeof force === 'undefined') ? !this.contains(list, token) : force;
+            return factory(list, token, type ? 'addOne' : 'remove');
         },
         contains: function(list, token) {
             return factory(list, token, 'exists');
@@ -123,14 +139,15 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
             this.element  = element;
         };
         ClassList.prototype = [];
-        ClassList.prototype.add = function(token) {
-            this.element[property] = tokenlist.add(this.element[property], token).join(' ');
+        ClassList.prototype.add = function() {
+            var token = Array.prototype.slice.call(arguments);
+            this.element[property] = tokenlist.add.apply(null, [this.element[property]].concat(token)).join(' ');
         };
         ClassList.prototype.remove = function(token) {
             this.element[property] = tokenlist.remove(this.element[property], token).join(' ');
         };
-        ClassList.prototype.toggle = function(token) {
-            var rst = tokenlist.toggle(this.element[property], token);
+        ClassList.prototype.toggle = function(token, force) {
+            var rst = tokenlist.toggle(this.element[property], token, force);
             this.element[property] = rst.list.join(' ');
             return rst.status;
         };
@@ -161,7 +178,7 @@ if ("document" in self && !("classList" in document.createElement("_"))) {
                 }
             }
         } else if (Object.prototype.__defineGetter__) {
-            view.Element.prototype.__defineGetter__('classListFoo', getter);
+            view.Element.prototype.__defineGetter__('classList', getter);
         }
 
     })(self);
